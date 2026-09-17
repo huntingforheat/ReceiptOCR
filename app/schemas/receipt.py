@@ -1,6 +1,6 @@
 from datetime import date
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class ReceiptItemResponse(BaseModel):
@@ -21,4 +21,37 @@ class ReceiptOcrResponse(BaseModel):
 
   items: list[ReceiptItemResponse] = Field(
     default_factory=list 
+  )
+
+
+class ReceiptItemSavedResponse(BaseModel):
+  model_config = ConfigDict(
+    from_attributes=True
+  )
+
+  id: int
+  name: str | None
+  quantity: float | None
+  unit_price: float | None
+  total_price: float | None
+  category: str | None
+
+
+class ReceiptSavedResponse(BaseModel):
+  model_config = ConfigDict(
+    from_attributes=True
+  )
+
+  id: int
+  trip_id: int
+
+  original_filename: str | None
+  merchant_name: str | None
+  transaction_date: date | None
+
+  total: float | None
+  currency: str | None
+
+  items: list[ReceiptItemSavedResponse] = Field(
+    default_factory=list
   )
