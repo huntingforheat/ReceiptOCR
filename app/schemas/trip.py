@@ -1,4 +1,5 @@
 from datetime import date, datetime
+from decimal import Decimal
 
 from pydantic import BaseModel, ConfigDict
 
@@ -27,3 +28,12 @@ class TripResponse(BaseModel):
 
   base_currency: str
   created_at: datetime
+
+
+class TripSummaryResponse(BaseModel):
+
+  trip_id: int
+  trip_name: str
+  base_currency: str
+  receipt_count: int
+  total_spent: Decimal

@@ -31,6 +31,7 @@ class ReceiptItemSavedResponse(BaseModel):
 
   id: int
   name: str | None
+  translated_name: str | None
   quantity: float | None
   unit_price: float | None
   total_price: float | None
@@ -51,6 +52,10 @@ class ReceiptSavedResponse(BaseModel):
 
   total: float | None
   currency: str | None
+
+  exchange_rate: float | None
+  converted_total: float | None
+  rate_date: date | None
 
   items: list[ReceiptItemSavedResponse] = Field(
     default_factory=list

@@ -98,6 +98,21 @@ class Receipt(Base):
         nullable=True
     )
 
+    exchange_rate: Mapped[Decimal | None] = mapped_column(
+        Numeric(20, 8),
+        nullable=True
+    )
+
+    converted_total: Mapped[Decimal | None] = mapped_column(
+        Numeric(15, 2),
+        nullable=True
+    )
+
+    rate_date: Mapped[date | None] = mapped_column(
+        Date,
+        nullable=True
+    )
+
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         server_default=func.now(),
@@ -127,6 +142,11 @@ class ReceiptItem(Base):
   )
 
   name: Mapped[str | None] = mapped_column(
+    String(500),
+    nullable=True
+  )
+
+  translated_name: Mapped[str | None] = mapped_column(
     String(500),
     nullable=True
   )

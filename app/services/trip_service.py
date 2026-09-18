@@ -1,8 +1,16 @@
-from sqlalchemy import select
+from decimal import Decimal
+
+from sqlalchemy import select, func
 from sqlalchemy.orm import Session
 
-from app.models.entities import Trip
-from app.schemas.trip import TripCreate
+from app.models.entities import (
+  Receipt,
+  Trip,
+)
+from app.schemas.trip import (
+  TripCreate,
+  TripSummaryResponse,
+)
 
 
 class TripService:
@@ -22,9 +30,7 @@ class TripService:
     )
 
     db.add(trip)
-
     db.commit()
-
     db.refresh(trip)
 
     return trip
@@ -41,4 +47,49 @@ class TripService:
 
     return list(
       db.scalars(stmt).all()
+    )
+
+  def get_summary(
+      self,
+      db: Session,
+      trip_id: int
+  ) -> TripSummaryResponse:
+
+    trip = db.get(
+      Trip,
+      trip_id
+    )
+
+    if trip is None:
+      raise LookupError(
+        "여행 정보를 찾을 수 없습니다."
+      )
+
+    stmt = (
+      select(
+        func.count(Receipt.id),
+        func.coalesce(
+          func.sum(
+            Receipt.converted_total
+          ),
+          0
+        )
+      )
+      .where(
+        Receipt.trip_id == trip_id
+      )
+    )
+
+    receipt_count, total_spent = (
+      db.execute(stmt).one()
+    )
+
+    return TripSummaryResponse(
+      trip_id=trip_id,
+      trip_name=trip.name,
+      base_currency=trip.base_currency,
+      receipt_count=receipt_count,
+      total_spent=Decimal(
+        str(total_spent)
+      )
     )

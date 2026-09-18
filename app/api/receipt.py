@@ -8,6 +8,7 @@ from fastapi import (
 from app.infrastructure.azure_document import (
   AzureReceiptOcrAdapter,
 )
+from app.infrastructure.exchange_rate import ExchangeRateAdapter
 from app.schemas.receipt import ReceiptOcrResponse
 from app.services.receipt_service import ReceiptService
 
@@ -19,9 +20,11 @@ router = APIRouter(
 
 
 ocr_adapter = AzureReceiptOcrAdapter()
+exchange_rate_adapter = ExchangeRateAdapter()
 
 receipt_service = ReceiptService(
-  ocr_adapter=ocr_adapter
+  ocr_adapter=ocr_adapter,
+  exchange_rate_adapter=exchange_rate_adapter
 )
 
 @router.post(
